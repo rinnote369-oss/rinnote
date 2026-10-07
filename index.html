@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>rinnote</title>
+  <meta name="description" content="ふれる。つながる。心が、ほどけていく。手から伝わるぬくもりと、寄り添う気持ちを。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600&family=Cormorant+Garamond:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <a href="/" class="logo">rinnote</a>
+
+    <button class="menu-toggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="global-nav">
+      <span></span><span></span><span></span>
+    </button>
+
+    <nav class="global-nav" id="global-nav">
+      <ul>
+        <li><a href="#top"><span class="en">Home</span>ホーム</a></li>
+        <li><a href="#about"><span class="en">About</span>rinnoteについて</a></li>
+        <li><a href="#menu"><span class="en">Menu</span>メニュー</a></li>
+        <li><a href="#contact"><span class="en">Contact</span>お問い合わせ</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero" id="top">
+    <div class="hero-slides" aria-hidden="true">
+      <div class="hero-slide" style="background-image: url('images/hero-feather.jpg');"></div>
+      <div class="hero-slide" style="background-image: url('images/hero-light.jpg');"></div>
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span>ふれる。つながる。</span>
+        <span>心が、ほどけていく。</span>
+      </h1>
+      <p class="hero-lead">手から伝わるぬくもりと、寄り添う気持ちを。</p>
+    </div>
+
+    <div class="scroll-hint" aria-hidden="true">scroll</div>
+  </section>
+
+  <!-- 各セクション（中身はこれから作ります） -->
+  <section class="section" id="about">
+    <h2 class="section-title"><span class="en">About</span>rinnoteについて</h2>
+    <p class="coming-soon">準備中です</p>
+  </section>
+
+  <section class="section" id="menu">
+    <h2 class="section-title"><span class="en">Menu</span>メニュー</h2>
+    <p class="coming-soon">準備中です</p>
+  </section>
+
+  <section class="section" id="contact">
+    <h2 class="section-title"><span class="en">Contact</span>お問い合わせ</h2>
+    <p class="coming-soon">準備中です</p>
+  </section>
+
+  <footer class="site-footer">
+    <small>&copy; rinnote</small>
+  </footer>
+
+  <script>
+    // スクロールしたらメニューバーに背景をつける
+    const header = document.querySelector('.site-header');
+    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // スマホ用メニューの開け閉め
+    const toggle = document.querySelector('.menu-toggle');
+    const setOpen = (open) => {
+      header.classList.toggle('is-open', open);
+      toggle.setAttribute('aria-expanded', open);
+      toggle.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+    };
+    toggle.addEventListener('click', () => setOpen(!header.classList.contains('is-open')));
+    document.querySelectorAll('.global-nav a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+  </script>
+
+</body>
+</html>

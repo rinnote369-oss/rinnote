@@ -1,0 +1,6 @@
+# 確認用の設定（サイトには不要）
+.claude/
+
+# Windows が自動で作るファイル
+Thumbs.db
+desktop.ini
