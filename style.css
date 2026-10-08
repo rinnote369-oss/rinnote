@@ -120,7 +120,7 @@ html {
   position: relative;
   height: 70vh;
   height: 70svh;
-  min-height: 440px;
+  min-height: 520px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -161,9 +161,29 @@ html {
   text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
 }
 
+/* 屋号。下に細い線を添える */
+.hero-brand {
+  font-size: clamp(1.4rem, 3.6vw, 2rem);
+  letter-spacing: 0.2em;
+  line-height: 1.4;
+  margin-bottom: 1.4em;
+  opacity: 0;
+  animation: fadeUp 1.6s ease 0.1s forwards;
+}
+
+.hero-brand::after {
+  content: "";
+  display: block;
+  width: 40px;
+  height: 1px;
+  margin: 0.7em auto 0;
+  background: currentColor;
+  opacity: 0.8;
+}
+
 .hero-title {
   font-weight: 600;
-  font-size: clamp(1.6rem, 5vw, 3rem);
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
   line-height: 1.7;
   letter-spacing: 0.15em;
 }
@@ -174,8 +194,8 @@ html {
   animation: fadeUp 1.6s ease forwards;
 }
 
-.hero-title span:nth-child(1) { animation-delay: 0.4s; }
-.hero-title span:nth-child(2) { animation-delay: 1.2s; }
+.hero-title span:nth-child(1) { animation-delay: 0.8s; }
+.hero-title span:nth-child(2) { animation-delay: 1.5s; }
 
 .hero-lead {
   margin-top: 2em;
@@ -183,7 +203,7 @@ html {
   letter-spacing: 0.12em;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
   opacity: 0;
-  animation: fadeUp 1.6s ease 2.2s forwards;
+  animation: fadeUp 1.6s ease 2.4s forwards;
 }
 
 @keyframes fadeUp {
@@ -193,7 +213,7 @@ html {
 
 .scroll-hint {
   position: absolute;
-  bottom: 28px;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
@@ -208,7 +228,7 @@ html {
   content: "";
   display: block;
   width: 1px;
-  height: 40px;
+  height: 32px;
   margin: 10px auto 0;
   background: var(--text-light);
   animation: scrollLine 2s ease-in-out infinite;
@@ -389,7 +409,7 @@ html {
 }
 
 @media (max-width: 600px) {
-  .hero { height: 60svh; min-height: 400px; }
+  .hero { height: 62svh; min-height: 480px; }
   .hero-title { letter-spacing: 0.08em; }
   .section { padding: 88px 16px; }
   .section-title .en { font-size: 2rem; }
@@ -401,6 +421,7 @@ html {
 /* 動きを減らす設定の人向け */
 @media (prefers-reduced-motion: reduce) {
   .hero-slide { animation: none; }
+  .hero-brand,
   .hero-title span,
   .hero-lead { animation: none; opacity: 1; }
   .scroll-hint::after { animation: none; }
