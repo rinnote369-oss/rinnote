@@ -173,9 +173,9 @@ html {
 /* ===== ヒーロー ===== */
 .hero {
   position: relative;
-  height: 100vh;
-  height: 100svh;
-  min-height: 520px;
+  height: 70vh;
+  height: 70svh;
+  min-height: 440px;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -457,6 +457,7 @@ html {
 }
 
 @media (max-width: 600px) {
+  .hero { height: 60svh; min-height: 400px; }
   .hero-title { letter-spacing: 0.08em; }
   .section { padding: 88px 16px; }
   .section-title .en { font-size: 2rem; }
