@@ -37,7 +37,6 @@
   <section class="hero" id="top">
     <div class="hero-slides" aria-hidden="true">
       <div class="hero-slide" style="background-image: url('images/hero-feather.jpg');"></div>
-      <div class="hero-slide" style="background-image: url('images/hero-light.jpg');"></div>
     </div>
     <div class="hero-overlay"></div>
 
@@ -101,13 +100,9 @@
   </footer>
 
   <script>
-    // スクロールしたらメニューバーに背景をつける
-    const header = document.querySelector('.site-header');
-    const onScroll = () => header.classList.toggle('is-scrolled', window.scrollY > 40);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
 
     // スマホ用メニューの開け閉め
+    const header = document.querySelector('.site-header');
     const toggle = document.querySelector('.menu-toggle');
     const setOpen = (open) => {
       header.classList.toggle('is-open', open);
