@@ -358,6 +358,15 @@ html {
 }
 
 /* ===== 聖子の想い ===== */
+.owner-photo {
+  display: block;
+  width: 280px;
+  max-width: 70%;
+  height: auto;
+  margin: 56px auto 0;
+  border-radius: 4px;
+}
+
 .owner-sign {
   margin-top: 0.4em;
   color: #9c7f5f;
