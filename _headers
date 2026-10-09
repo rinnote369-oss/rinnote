@@ -1,0 +1,3 @@
+# Always check for the latest design files so updates show right away
+/*.css
+  Cache-Control: no-cache

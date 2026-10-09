@@ -527,7 +527,7 @@ html {
   .section-title .en { font-size: 2rem; }
   .menu-text { font-size: 0.9rem; }
   .about-body { font-size: 0.9rem; margin-top: 40px; }
-  .concept-list { grid-template-columns: 1fr; gap: 44px; margin-top: 44px; }
+  .concept-list { grid-template-columns: 1fr; gap: 56px; margin-top: 48px; }
   .price-groups { grid-template-columns: 1fr; gap: 40px; margin-top: 48px; }
   .sp-only { display: inline; }
 }
