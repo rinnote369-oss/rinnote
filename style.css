@@ -358,12 +358,19 @@ html {
 }
 
 /* ===== 聖子の想い ===== */
+/* 小さな写真と、はじめましてのあいさつを横に並べる */
+.owner-intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  text-align: left;
+}
+
 .owner-photo {
-  display: block;
-  width: 280px;
-  max-width: 70%;
+  flex: none;
+  width: 120px;
   height: auto;
-  margin: 56px auto 0;
   /* 四辺をふんわりぼかして背景になじませる */
   -webkit-mask-image:
     linear-gradient(to right, transparent, #000 14%, #000 86%, transparent),
@@ -536,6 +543,8 @@ html {
   .about-body { font-size: 0.9rem; margin-top: 40px; }
   .concept-list { gap: 52px; margin-top: 48px; }
   .concept-list li { font-size: 0.9rem; }
+  .owner-photo { width: 96px; }
+  .owner-intro { gap: 18px; }
   .price-groups { grid-template-columns: 1fr; gap: 40px; margin-top: 48px; }
   .sp-only { display: inline; }
 }
