@@ -58,7 +58,7 @@ html {
 
 .global-nav ul {
   display: flex;
-  gap: 40px;
+  gap: 32px;
   list-style: none;
 }
 
@@ -326,6 +326,54 @@ html {
   background: #b89b7a;
 }
 
+/* ===== コンセプト（3つの柱） ===== */
+.concept-lead {
+  margin-top: 40px;
+  font-size: 0.95rem;
+  letter-spacing: 0.1em;
+}
+
+.concept-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  max-width: 900px;
+  margin: 56px auto 0;
+  list-style: none;
+}
+
+.concept-list li {
+  min-width: 0;
+  font-size: 0.9rem;
+  line-height: 2.1;
+  letter-spacing: 0.06em;
+}
+
+.concept-name {
+  margin-bottom: 0.9em;
+  font-weight: 600;
+  font-size: 1.15rem;
+  letter-spacing: 0.15em;
+}
+
+/* 見出しの下に小さな丸をひとつ */
+.concept-name::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 0.8em auto 0;
+  border-radius: 50%;
+  background: #b89b7a;
+}
+
+/* ===== 聖子の想い ===== */
+.owner-sign {
+  margin-top: 0.4em;
+  color: #9c7f5f;
+  letter-spacing: 0.2em;
+}
+
 /* ===== メニュー ===== */
 .menu-card {
   max-width: 720px;
@@ -479,6 +527,7 @@ html {
   .section-title .en { font-size: 2rem; }
   .menu-text { font-size: 0.9rem; }
   .about-body { font-size: 0.9rem; margin-top: 40px; }
+  .concept-list { grid-template-columns: 1fr; gap: 44px; margin-top: 44px; }
   .price-groups { grid-template-columns: 1fr; gap: 40px; margin-top: 48px; }
   .sp-only { display: inline; }
 }
