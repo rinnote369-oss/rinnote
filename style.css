@@ -333,38 +333,28 @@ html {
   letter-spacing: 0.1em;
 }
 
+/* 3つを縦に並べ、項目の間をゆったりあける */
 .concept-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-  max-width: 900px;
-  margin: 56px auto 0;
+  gap: 64px;
+  max-width: 640px;
+  margin: 64px auto 0;
+  padding: 0;
   list-style: none;
 }
 
 .concept-list li {
   min-width: 0;
-  font-size: 0.9rem;
-  line-height: 2.1;
-  letter-spacing: 0.06em;
+  font-size: 0.95rem;
+  line-height: 2.2;
+  letter-spacing: 0.08em;
 }
 
 .concept-name {
-  margin-bottom: 0.9em;
+  margin-bottom: 0.8em;
   font-weight: 600;
   font-size: 1.15rem;
   letter-spacing: 0.15em;
-}
-
-/* 見出しの下に小さな丸をひとつ */
-.concept-name::after {
-  content: "";
-  display: block;
-  width: 6px;
-  height: 6px;
-  margin: 0.8em auto 0;
-  border-radius: 50%;
-  background: #b89b7a;
 }
 
 /* ===== 聖子の想い ===== */
@@ -527,7 +517,8 @@ html {
   .section-title .en { font-size: 2rem; }
   .menu-text { font-size: 0.9rem; }
   .about-body { font-size: 0.9rem; margin-top: 40px; }
-  .concept-list { grid-template-columns: 1fr; gap: 56px; margin-top: 48px; }
+  .concept-list { gap: 52px; margin-top: 48px; }
+  .concept-list li { font-size: 0.9rem; }
   .price-groups { grid-template-columns: 1fr; gap: 40px; margin-top: 48px; }
   .sp-only { display: inline; }
 }
