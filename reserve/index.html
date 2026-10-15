@@ -1358,6 +1358,8 @@ function syncSettingsFromServer(cb){
       if(s && s.settings && typeof s.settings==='object') Object.assign(settings, s.settings);
       if(s && s.ownerName) owner.name=s.ownerName;
       if(s && s.weeklyHours) settingsLoaded=true;
+      // まだ一度も保存していない（Google側の設定が空）ときも、読み込めたものとして保存できるようにする
+      if(s && typeof s==='object' && !Array.isArray(s) && Object.keys(s).length===0) settingsLoaded=true;
       applySimpleMode_();
       if(cb)cb();
     })
