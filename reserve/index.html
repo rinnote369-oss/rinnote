@@ -102,6 +102,18 @@
   @keyframes btnPulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(122,150,128,.0); transform:scale(1); } 50%{ box-shadow:0 0 0 8px rgba(122,150,128,.18); transform:scale(1.02); } }
   .btn.okflash{ animation:btnOk .6s ease-out 1; }
   @keyframes btnOk{ 0%{ transform:scale(1); } 40%{ transform:scale(1.04); } 100%{ transform:scale(1); } }
+  /* キャンセルを送っているあいだ、ボタンが「びよーん」と伸び縮みして震える */
+  .btn.boing{ cursor:wait; pointer-events:none; animation:btnBoing .9s ease-in-out infinite; }
+  @keyframes btnBoing{
+    0%,100%{ transform:scale(1,1) rotate(0); }
+    15%{ transform:scale(1.10,.90) rotate(-1.5deg); }
+    30%{ transform:scale(.94,1.08) rotate(1.5deg); }
+    45%{ transform:scale(1.05,.96) rotate(-1deg); }
+    60%{ transform:scale(.98,1.03) rotate(1deg); }
+    75%{ transform:scale(1.01,.99) rotate(0); }
+  }
+  @media (prefers-reduced-motion: reduce){ .btn.boing{ animation:none; opacity:.7; } }
+  .sendErr{ color:var(--err); font-size:13px; margin:10px 0 0; text-align:left; }
 </style>
 </head>
 <body>
@@ -645,6 +657,48 @@ function askConfirmNote(title, message, placeholder, onYes){
   root.querySelector('.overlay').addEventListener('click',ev=>{if(ev.target.classList.contains('overlay'))close();});
   root.querySelector('#acYes').addEventListener('click',()=>{ const note=root.querySelector('#acNote').value.trim(); close(); onYes(note); });
 }
+// キャンセル用：「はい」を押したら、Google側から「受け付けました」の返事が来るまで画面を閉じずに待つ。
+// 送っているあいだはボタンが「送信中…」になって揺れる。届かなかったときは、この画面にそのことを出す。
+function askCancelAndSend(bk, onDone){
+  const root=document.getElementById('modalRoot');
+  root.innerHTML='<div class="overlay"><div class="sheet"><h2 style="margin-top:4px;">予約のキャンセル</h2>'+
+    '<p class="profTxt" style="white-space:pre-wrap;margin-bottom:6px;">'+escapeHtml(fmtDateJ(bk.date)+' '+bk.time+' の予約をキャンセルしますか？')+'</p>'+
+    '<label class="f">メッセージ・ご相談内容<span class="opt2">任意</span></label>'+
+    '<textarea id="acNote" placeholder="キャンセルの理由があれば（任意）"></textarea>'+
+    '<p class="sendErr" id="acErr" style="display:none;"></p>'+
+    '<button class="btn danger" id="acYes">はい、キャンセルする</button>'+
+    '<button class="btn ghost" id="acNo">いいえ</button></div></div>';
+  let sending=false;
+  const close=()=>{ if(!sending) root.innerHTML=''; };
+  const yes=root.querySelector('#acYes'), no=root.querySelector('#acNo'), err=root.querySelector('#acErr');
+  no.addEventListener('click',close);
+  root.querySelector('.overlay').addEventListener('click',ev=>{if(ev.target.classList.contains('overlay'))close();});
+  yes.addEventListener('click',()=>{
+    if(sending) return;
+    sending=true; err.style.display='none';
+    yes.textContent='送信中…'; yes.classList.add('boing'); no.disabled=true;
+    sendBookingEmails(bk,'cancelled',root.querySelector('#acNote').value.trim(),true)
+      .then(()=>{ sending=false; root.innerHTML=''; onDone(); })
+      .catch(()=>{
+        sending=false; yes.classList.remove('boing'); yes.textContent='もう一度送る'; no.disabled=false;
+        e(err,'通信がうまくいかず、キャンセルを受け付けられませんでした（まだキャンセルされていません）。電波の良いところで「もう一度送る」を押すか、ご予約確認メールのリンクからお手続きください。');
+      });
+  });
+}
+// Google側へ送り、「受け付けました（ok:true）」の返事を確かめる。届かなければ少し待って取り直す（最大3回）。
+function postConfirmed_(payload, tries){
+  tries=tries||3;
+  const ctl=(typeof AbortController!=='undefined') ? new AbortController() : null;
+  const timer=ctl ? setTimeout(()=>ctl.abort(), 25000) : null;
+  return fetch(MAIL_ENDPOINT,{ method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload), signal: ctl ? ctl.signal : undefined })
+    .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+    .then(res=>{ if(!res || res.ok!==true) throw new Error('not ok'); return res; })
+    .finally(()=>{ if(timer) clearTimeout(timer); })
+    .catch(err=>{
+      if(tries<=1) throw err;
+      return new Promise(res=>setTimeout(res, 2000)).then(()=>postConfirmed_(payload, tries-1));
+    });
+}
 function sumRow(k,val,big){ return '<div class="row"><div class="k">'+k+'</div><div class="v'+(big?' big':'')+'">'+escapeHtml(val)+'</div></div>'; }
 // settings.cancelPolicyUrlが設定されている時だけ出す、キャンセル・返金ポリシーへの案内（未設定なら空文字）。
 function policyNoteHtml_(){
@@ -1060,8 +1114,7 @@ function applyReschedule(note){
 }
 function cCancelBooking(){
   const bk=bookings.find(b=>b.id===cState.lastBookingId); if(!bk) return;
-  askConfirmNote('予約のキャンセル', fmtDateJ(bk.date)+' '+bk.time+' の予約をキャンセルしますか？', 'キャンセルの理由があれば（任意）', (note)=>{
-    try{ sendBookingEmails(bk,'cancelled',note); }catch(err){ console.log('メール送信呼び出しエラー', err); } // キャンセル通知（削除前に送る）
+  askCancelAndSend(bk, ()=>{ // Google側が受け付けたのを確かめてから「キャンセルしました」を出す
     bookings=bookings.filter(b=>b.id!==bk.id); // 枠が再び予約可能に
     document.getElementById('cDoneMark').textContent='－';
     document.getElementById('cDoneTitle').textContent='予約をキャンセルしました';
@@ -1412,7 +1465,8 @@ function finalizeWithCheck(){
 }
 // お客様＋オーナーへメール送信（送信はGASバックエンドで実行）。
 //   type: 'confirmed'=予約確定 / 'changed'=日時変更 / 'cancelled'=キャンセル
-function sendBookingEmails(bk, type, note){
+// confirm=true のときは、Google側の返事を待つ Promise を返す（キャンセルで使う）。
+function sendBookingEmails(bk, type, note, confirm){
   const doSend=(recaptchaToken)=>{
     const payload={
       type: type||'confirmed',
@@ -1431,14 +1485,15 @@ function sendBookingEmails(bk, type, note){
     if(!MAIL_ENDPOINT){
       console.log('%c[メール送信プレビュー] ('+payload.type+') MAIL_ENDPOINT未設定のため実際には送信されません。','color:#a9757a');
       console.log('お客様宛('+payload.customerEmail+') / オーナー宛('+payload.ownerEmail+')に送る内容:', payload);
-      return;
+      return confirm ? Promise.resolve({ok:true}) : undefined;
     }
+    if(confirm) return postConfirmed_(payload);
     // 公開後のサイトからも動く。GASはCORS応答を返さないため no-cors の fire-and-forget で送信を起動。
     fetch(MAIL_ENDPOINT,{ method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(payload) })
       .catch(err=>console.log('メール送信エラー', err));
   };
   // 新規予約のときだけ reCAPTCHA トークンを取得してから送信（変更・キャンセルは既存予約IDが必要なので対象外）。
-  if(type==='confirmed'){ getRecaptchaToken_(doSend); } else { doSend(''); }
+  if(type==='confirmed'){ getRecaptchaToken_(doSend); } else { return doSend(''); }
 }
 // 「入金を確認済みにする」を押したときに、サーバー（予約台帳）にも反映する。
 // これをしないと、ページを再読み込みしたりお客様側で同期したりしたときに「入金待ち」に戻ってしまう。
@@ -1588,7 +1643,7 @@ function luRender(){
       statusBadge+
       '<div class="rowbtns" style="margin-top:10px;"><button class="btn sm" data-act="change">日時を変更</button> <button class="btn sm danger" data-act="cancel">キャンセル</button></div>';
     div.querySelector('[data-act="change"]').addEventListener('click',()=>{ cState.lastBookingId=bk.id; startReschedule(); });
-    div.querySelector('[data-act="cancel"]').addEventListener('click',()=>{ askConfirmNote('予約のキャンセル', fmtDateJ(bk.date)+' '+bk.time+' の予約をキャンセルしますか？', 'キャンセルの理由があれば（任意）', (note)=>{ try{ sendBookingEmails(bk,'cancelled',note); }catch(err){ console.log('メール送信呼び出しエラー', err); } bookings=bookings.filter(x=>x.id!==bk.id); luRender(); }); });
+    div.querySelector('[data-act="cancel"]').addEventListener('click',()=>{ askCancelAndSend(bk, ()=>{ bookings=bookings.filter(x=>x.id!==bk.id); luRender(); }); });
     wrap.appendChild(div);
   });
 }
