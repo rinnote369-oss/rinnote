@@ -472,6 +472,43 @@ html {
   display: none;
 }
 
+/* ===== ご予約・お問い合わせ ===== */
+.contact-text {
+  margin-top: 48px;
+  font-size: 0.95rem;
+  line-height: 2.2;
+  letter-spacing: 0.08em;
+}
+
+.reserve-btn {
+  display: inline-block;
+  margin-top: 40px;
+  padding: 18px 64px;
+  border-radius: 999px;
+  background: #b89b7a;
+  color: #fff;
+  font-size: 1.05rem;
+  letter-spacing: 0.2em;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.reserve-btn:hover {
+  background: #9c7f5f;
+  transform: translateY(-2px);
+}
+
+.reserve-btn:focus-visible {
+  outline: 2px solid #9c7f5f;
+  outline-offset: 4px;
+}
+
+.contact-note {
+  margin-top: 20px;
+  color: #a39689;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+}
+
 .coming-soon {
   margin-top: 40px;
   color: #a39689;
